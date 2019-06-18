@@ -32,6 +32,9 @@ class GameOfLife:
         # Clock to control game framerate
         self.clock = pygame.time.Clock()
 
+        # Game active state controller
+        self.paused = False
+
 
     def _handle_mouse_clicks(self):
         """Toggles the state of a block on mouse click"""
@@ -49,13 +52,31 @@ class GameOfLife:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit(0)
+            # Handle key presses
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_q:
-                    pygame.quit()
-                    sys.exit(0)
+                self._handle_key_down_events(event)
             # Handle mouse clicks
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self._handle_mouse_clicks()
+
+
+    def _handle_key_down_events(self, event):
+        """Handles key press events
+            q - quit game
+            c - click screenshot
+            space - pause/play game"""
+
+        if event.key == pygame.K_q:
+            pygame.quit()
+            sys.exit(0)
+        # Press space for pause/play
+        elif event.key == pygame.K_SPACE:
+            self.paused = True if not self.paused else False
+        # Press 'C' to click a screenshot
+        elif event.key == pygame.K_c:
+            pygame.image.save(self.screen,
+                            f"screenshot{self.settings.s_shot}.png")
+            self.settings.s_shot += 1
 
 
     def _update_screen(self):
@@ -70,12 +91,15 @@ class GameOfLife:
         while True:
             # Handle events
             self._check_events()
-            # Update board state
-            self.board.update_game()
-            # Then update the screen (re-draw the blocks)
-            self._update_screen()
+            # If game not paused
+            if not self.paused:
+                # Update board state
+                self.board.update_game()
+                # Then update the screen (re-draw the blocks)
+                self._update_screen()
             # Limit framerate to 10 FPS
             self.clock.tick(10)
+            # pygame.image.save(self.screen, "100x100board.png")
 
 
 if __name__ == "__main__":

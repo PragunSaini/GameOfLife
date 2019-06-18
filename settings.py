@@ -20,4 +20,7 @@ class Settings:
         self.alive_color = (25, 255, 0)
 
         # Initial Board Density
-        self.board_density = 0.25
+        self.board_density = 0.2
+
+        # Screenshot number
+        self.s_shot = 0
